@@ -1,0 +1,26 @@
+version: '2'
+services:
+  db:
+    image: couchdb:1.6.1
+    volumes:
+      - "./christ-medical/db:/usr/local/var/lib/couchdb"
+    ports:
+      - "5984:5984"
+    restart: always
+    environment:
+      COUCHDB_USER: admin
+      COUCHDB_PASSWORD: password
+
+  christmedical:
+    depends_on:
+      - db
+    image: christmedical/christ-medical-server:latest
+    links:
+      - db
+    ports:
+      - "80:8888"
+    restart: always
+    environment:
+      COUCHDB_HOST: db:5984
+      COUCHDB_USER: admin
+      COUCHDB_PASSWORD: password
